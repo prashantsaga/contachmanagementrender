@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  mysqldbservice:
+    container_name: mysqldb-c1
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: contactmanagement
+    networks:
+      - contactmanagement-net
+    volumes:
+      - cmvolume:/var/lib/mysql
+
+  contactmanagement-service:
+    image: contactmanagement-i1
+    container_name: contactmanagement-c1
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"     
+    depends_on:
+      - mysqldbservice
+    networks:
+      - contactmanagement-net
+
+networks:
+  contactmanagement-net:
+
+volumes:
+  cmvolume:
